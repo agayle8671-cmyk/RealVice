@@ -93,9 +93,6 @@ export async function runScraperPipeline(): Promise<number> {
           const newItems = items.filter((i) => !existingHashes.has(i.urlHash));
 
           if (newItems.length > 0) {
-            const latestItem = newItems[0];
-            if (latestItem) latestItem.article.isFeatured = false;
-
             await db.insert(articlesTable).values(newItems.map((i) => i.article)).onConflictDoNothing();
             articlesNew += newItems.length;
           }
@@ -105,7 +102,7 @@ export async function runScraperPipeline(): Promise<number> {
           .update(sourcesTable)
           .set({
             lastScrapedAt: new Date(),
-            successCount: source.successCount + 1,
+            successCount: (source.successCount ?? 0) + 1,
             lastError: null,
           })
           .where(eq(sourcesTable.id, source.id));
@@ -119,7 +116,7 @@ export async function runScraperPipeline(): Promise<number> {
         await db
           .update(sourcesTable)
           .set({
-            failCount: source.failCount + 1,
+            failCount: (source.failCount ?? 0) + 1,
             lastError: errMsg,
           })
           .where(eq(sourcesTable.id, source.id));

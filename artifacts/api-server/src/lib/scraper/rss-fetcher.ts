@@ -35,12 +35,15 @@ export async function fetchRssFeed(
 ): Promise<FetchedItem[]> {
   const feed = await parser.parseURL(url);
   const results: FetchedItem[] = [];
+  const seen = new Set<string>();
 
   for (const item of feed.items) {
-    const link = item.link || item.guid;
+    const link = item.link || item.guid || (item as any).id;
     if (!link) continue;
 
     const urlHash = createHash("sha256").update(link).digest("hex");
+    if (seen.has(urlHash)) continue;
+    seen.add(urlHash);
     const title = item.title?.trim() || "Untitled";
     const rawContent = item.contentSnippet || item.content || item.summary || "";
     const category = categorizeArticle(title, rawContent, defaultCategory);
@@ -64,7 +67,9 @@ export async function fetchRssFeed(
     } else {
       const mediaThumb = (item as any).mediaThumbnail;
       if (mediaThumb?.$.url) imageThumbnail = mediaThumb.$.url;
+      else if (mediaThumb?.url) imageThumbnail = mediaThumb.url;
       else if ((item as any).mediaContent?.$.url) imageThumbnail = (item as any).mediaContent.$.url;
+      else if ((item as any).mediaContent?.url) imageThumbnail = (item as any).mediaContent.url;
       else if (item.enclosure?.url) imageThumbnail = item.enclosure.url;
     }
 

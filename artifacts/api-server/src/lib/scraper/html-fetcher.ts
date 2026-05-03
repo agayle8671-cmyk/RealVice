@@ -46,6 +46,7 @@ export async function fetchHtmlPage(
 
   const $ = cheerio.load(html);
   const results: FetchedItem[] = [];
+  const seen = new Set<string>();
   const baseUrl = new URL(url).origin;
 
   $(selectors.articleSelector).each((_, el) => {
@@ -61,6 +62,8 @@ export async function fetchHtmlPage(
     if (!href.startsWith("http")) return;
 
     const urlHash = createHash("sha256").update(href).digest("hex");
+    if (seen.has(urlHash)) return;
+    seen.add(urlHash);
     const rawContent = $el.find("p, .excerpt, .summary, .description").first().text().trim();
     const category = categorizeArticle(title, rawContent, defaultCategory);
     if (category === "filtered") return;

@@ -103,6 +103,12 @@ export const DEFAULT_SOURCES: SourceConfig[] = [
     type: "rss",
     defaultCategory: "Intel",
   },
+  {
+    name: "Rockstar Games Newswire RSS",
+    url: "https://www.rockstargames.com/newswire/rss",
+    type: "rss",
+    defaultCategory: "Vice City",
+  },
 ];
 
 export const GTA6_KEYWORDS = [
