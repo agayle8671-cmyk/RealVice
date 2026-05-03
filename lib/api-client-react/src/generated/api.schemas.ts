@@ -8,3 +8,83 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface Article {
+  id: number;
+  title: string;
+  excerpt?: string | null;
+  content?: string | null;
+  category: string;
+  sourceUrl: string;
+  imageThumbnail?: string | null;
+  videoUrl?: string | null;
+  videoThumbnail?: string | null;
+  isVideo: boolean;
+  author?: string | null;
+  sourceName: string;
+  tags?: string[] | null;
+  commentsCount: number;
+  isFeatured: boolean;
+  publishedAt?: string | null;
+  scrapedAt: string;
+}
+
+export interface ArticleListResponse {
+  articles: Article[];
+  total: number;
+  offset: number;
+  limit: number;
+}
+
+export interface Source {
+  id: number;
+  name: string;
+  url: string;
+  type: string;
+  defaultCategory: string;
+  isActive: boolean;
+  lastScrapedAt?: string | null;
+  successCount: number;
+  failCount: number;
+  lastError?: string | null;
+}
+
+export interface SourceListResponse {
+  sources: Source[];
+}
+
+export interface ScraperRun {
+  id: number;
+  startedAt: string;
+  completedAt?: string | null;
+  status: string;
+  articlesFound: number;
+  articlesNew: number;
+  sourcesProcessed: number;
+  sourcesFailed: number;
+  errorMsg?: string | null;
+}
+
+export interface ScraperStatusResponse {
+  isRunning: boolean;
+  lastRun?: ScraperRun | null;
+  recentRuns: ScraperRun[];
+  nextRunIn: string;
+}
+
+export interface ScraperTriggerResponse {
+  message: string;
+  runId: number;
+}
+
+export interface ErrorResponse {
+  error: string;
+}
+
+export type ListArticlesParams = {
+  category?: string;
+  featured?: boolean;
+  limit?: number;
+  offset?: number;
+  search?: string;
+};

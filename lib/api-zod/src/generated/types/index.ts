@@ -6,4 +6,13 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./article";
+export * from "./articleListResponse";
+export * from "./errorResponse";
 export * from "./healthStatus";
+export * from "./listArticlesParams";
+export * from "./scraperRun";
+export * from "./scraperStatusResponse";
+export * from "./scraperTriggerResponse";
+export * from "./source";
+export * from "./sourceListResponse";

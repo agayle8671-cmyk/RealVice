@@ -5,15 +5,27 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  Article,
+  ArticleListResponse,
+  ErrorResponse,
+  HealthStatus,
+  ListArticlesParams,
+  ScraperStatusResponse,
+  ScraperTriggerResponse,
+  SourceListResponse,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
 import type { ErrorType } from "../custom-fetch";
@@ -25,7 +37,6 @@ type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const getHealthCheckUrl = () => {
@@ -92,6 +103,418 @@ export function useHealthCheck<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getHealthCheckQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List articles
+ */
+export const getListArticlesUrl = (params?: ListArticlesParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/articles?${stringifiedParams}`
+    : `/api/articles`;
+};
+
+export const listArticles = async (
+  params?: ListArticlesParams,
+  options?: RequestInit,
+): Promise<ArticleListResponse> => {
+  return customFetch<ArticleListResponse>(getListArticlesUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListArticlesQueryKey = (params?: ListArticlesParams) => {
+  return [`/api/articles`, ...(params ? [params] : [])] as const;
+};
+
+export const getListArticlesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listArticles>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListArticlesParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listArticles>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listArticles>>> = ({
+    signal,
+  }) => listArticles(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listArticles>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListArticlesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listArticles>>
+>;
+export type ListArticlesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List articles
+ */
+
+export function useListArticles<
+  TData = Awaited<ReturnType<typeof listArticles>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListArticlesParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listArticles>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListArticlesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get article by ID
+ */
+export const getGetArticleUrl = (id: number) => {
+  return `/api/articles/${id}`;
+};
+
+export const getArticle = async (
+  id: number,
+  options?: RequestInit,
+): Promise<Article> => {
+  return customFetch<Article>(getGetArticleUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetArticleQueryKey = (id: number) => {
+  return [`/api/articles/${id}`] as const;
+};
+
+export const getGetArticleQueryOptions = <
+  TData = Awaited<ReturnType<typeof getArticle>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getArticle>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetArticleQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getArticle>>> = ({
+    signal,
+  }) => getArticle(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getArticle>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetArticleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getArticle>>
+>;
+export type GetArticleQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get article by ID
+ */
+
+export function useGetArticle<
+  TData = Awaited<ReturnType<typeof getArticle>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  id: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getArticle>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetArticleQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Manually trigger a scrape run
+ */
+export const getTriggerScraperUrl = () => {
+  return `/api/scraper/trigger`;
+};
+
+export const triggerScraper = async (
+  options?: RequestInit,
+): Promise<ScraperTriggerResponse> => {
+  return customFetch<ScraperTriggerResponse>(getTriggerScraperUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getTriggerScraperMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof triggerScraper>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof triggerScraper>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["triggerScraper"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof triggerScraper>>,
+    void
+  > = () => {
+    return triggerScraper(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TriggerScraperMutationResult = NonNullable<
+  Awaited<ReturnType<typeof triggerScraper>>
+>;
+
+export type TriggerScraperMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Manually trigger a scrape run
+ */
+export const useTriggerScraper = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof triggerScraper>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof triggerScraper>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getTriggerScraperMutationOptions(options));
+};
+
+/**
+ * @summary Get recent scraper run history
+ */
+export const getGetScraperStatusUrl = () => {
+  return `/api/scraper/status`;
+};
+
+export const getScraperStatus = async (
+  options?: RequestInit,
+): Promise<ScraperStatusResponse> => {
+  return customFetch<ScraperStatusResponse>(getGetScraperStatusUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetScraperStatusQueryKey = () => {
+  return [`/api/scraper/status`] as const;
+};
+
+export const getGetScraperStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof getScraperStatus>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getScraperStatus>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetScraperStatusQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getScraperStatus>>
+  > = ({ signal }) => getScraperStatus({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getScraperStatus>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetScraperStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getScraperStatus>>
+>;
+export type GetScraperStatusQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get recent scraper run history
+ */
+
+export function useGetScraperStatus<
+  TData = Awaited<ReturnType<typeof getScraperStatus>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getScraperStatus>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetScraperStatusQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List all configured sources
+ */
+export const getListSourcesUrl = () => {
+  return `/api/scraper/sources`;
+};
+
+export const listSources = async (
+  options?: RequestInit,
+): Promise<SourceListResponse> => {
+  return customFetch<SourceListResponse>(getListSourcesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListSourcesQueryKey = () => {
+  return [`/api/scraper/sources`] as const;
+};
+
+export const getListSourcesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listSources>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listSources>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListSourcesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSources>>> = ({
+    signal,
+  }) => listSources({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listSources>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListSourcesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listSources>>
+>;
+export type ListSourcesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all configured sources
+ */
+
+export function useListSources<
+  TData = Awaited<ReturnType<typeof listSources>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listSources>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListSourcesQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

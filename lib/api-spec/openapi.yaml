@@ -10,13 +10,16 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: articles
+    description: Article operations
+  - name: scraper
+    description: Scraper management
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +27,105 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /articles:
+    get:
+      operationId: listArticles
+      tags: [articles]
+      summary: List articles
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          schema:
+            type: number
+        - name: offset
+          in: query
+          schema:
+            type: number
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Article list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListResponse"
+
+  /articles/{id}:
+    get:
+      operationId: getArticle
+      tags: [articles]
+      summary: Get article by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /scraper/trigger:
+    post:
+      operationId: triggerScraper
+      tags: [scraper]
+      summary: Manually trigger a scrape run
+      responses:
+        "200":
+          description: Trigger result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScraperTriggerResponse"
+
+  /scraper/status:
+    get:
+      operationId: getScraperStatus
+      tags: [scraper]
+      summary: Get recent scraper run history
+      responses:
+        "200":
+          description: Scraper status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScraperStatusResponse"
+
+  /scraper/sources:
+    get:
+      operationId: listSources
+      tags: [scraper]
+      summary: List all configured sources
+      responses:
+        "200":
+          description: Source list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SourceListResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +136,199 @@ components:
       required:
         - status
 
+    Article:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        excerpt:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        category:
+          type: string
+        sourceUrl:
+          type: string
+        imageThumbnail:
+          type: string
+          nullable: true
+        videoUrl:
+          type: string
+          nullable: true
+        videoThumbnail:
+          type: string
+          nullable: true
+        isVideo:
+          type: boolean
+        author:
+          type: string
+          nullable: true
+        sourceName:
+          type: string
+        tags:
+          type: array
+          nullable: true
+          items:
+            type: string
+        commentsCount:
+          type: number
+        isFeatured:
+          type: boolean
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        scrapedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - category
+        - sourceUrl
+        - isVideo
+        - sourceName
+        - commentsCount
+        - isFeatured
+        - scrapedAt
+
+    ArticleListResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+      required:
+        - articles
+        - total
+        - offset
+        - limit
+
+    Source:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        url:
+          type: string
+        type:
+          type: string
+        defaultCategory:
+          type: string
+        isActive:
+          type: boolean
+        lastScrapedAt:
+          type: string
+          format: date-time
+          nullable: true
+        successCount:
+          type: number
+        failCount:
+          type: number
+        lastError:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - url
+        - type
+        - defaultCategory
+        - isActive
+        - successCount
+        - failCount
+
+    SourceListResponse:
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/Source"
+      required:
+        - sources
+
+    ScraperRun:
+      type: object
+      properties:
+        id:
+          type: number
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+        articlesFound:
+          type: number
+        articlesNew:
+          type: number
+        sourcesProcessed:
+          type: number
+        sourcesFailed:
+          type: number
+        errorMsg:
+          type: string
+          nullable: true
+      required:
+        - id
+        - startedAt
+        - status
+        - articlesFound
+        - articlesNew
+        - sourcesProcessed
+        - sourcesFailed
+
+    ScraperStatusResponse:
+      type: object
+      properties:
+        isRunning:
+          type: boolean
+        lastRun:
+          $ref: "#/components/schemas/ScraperRun"
+          nullable: true
+        recentRuns:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScraperRun"
+        nextRunIn:
+          type: string
+      required:
+        - isRunning
+        - recentRuns
+        - nextRunIn
+
+    ScraperTriggerResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        runId:
+          type: number
+      required:
+        - message
+        - runId
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

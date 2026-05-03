@@ -8,9 +8,135 @@
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
+});
+
+/**
+ * @summary List articles
+ */
+export const ListArticlesQueryParams = zod.object({
+  category: zod.coerce.string().optional(),
+  featured: zod.coerce.boolean().optional(),
+  limit: zod.coerce.number().optional(),
+  offset: zod.coerce.number().optional(),
+  search: zod.coerce.string().optional(),
+});
+
+export const ListArticlesResponse = zod.object({
+  articles: zod.array(
+    zod.object({
+      id: zod.number(),
+      title: zod.string(),
+      excerpt: zod.string().nullish(),
+      content: zod.string().nullish(),
+      category: zod.string(),
+      sourceUrl: zod.string(),
+      imageThumbnail: zod.string().nullish(),
+      videoUrl: zod.string().nullish(),
+      videoThumbnail: zod.string().nullish(),
+      isVideo: zod.boolean(),
+      author: zod.string().nullish(),
+      sourceName: zod.string(),
+      tags: zod.array(zod.string()).nullish(),
+      commentsCount: zod.number(),
+      isFeatured: zod.boolean(),
+      publishedAt: zod.coerce.date().nullish(),
+      scrapedAt: zod.coerce.date(),
+    }),
+  ),
+  total: zod.number(),
+  offset: zod.number(),
+  limit: zod.number(),
+});
+
+/**
+ * @summary Get article by ID
+ */
+export const GetArticleParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetArticleResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  excerpt: zod.string().nullish(),
+  content: zod.string().nullish(),
+  category: zod.string(),
+  sourceUrl: zod.string(),
+  imageThumbnail: zod.string().nullish(),
+  videoUrl: zod.string().nullish(),
+  videoThumbnail: zod.string().nullish(),
+  isVideo: zod.boolean(),
+  author: zod.string().nullish(),
+  sourceName: zod.string(),
+  tags: zod.array(zod.string()).nullish(),
+  commentsCount: zod.number(),
+  isFeatured: zod.boolean(),
+  publishedAt: zod.coerce.date().nullish(),
+  scrapedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Manually trigger a scrape run
+ */
+export const TriggerScraperResponse = zod.object({
+  message: zod.string(),
+  runId: zod.number(),
+});
+
+/**
+ * @summary Get recent scraper run history
+ */
+export const GetScraperStatusResponse = zod.object({
+  isRunning: zod.boolean(),
+  lastRun: zod
+    .object({
+      id: zod.number(),
+      startedAt: zod.coerce.date(),
+      completedAt: zod.coerce.date().nullish(),
+      status: zod.string(),
+      articlesFound: zod.number(),
+      articlesNew: zod.number(),
+      sourcesProcessed: zod.number(),
+      sourcesFailed: zod.number(),
+      errorMsg: zod.string().nullish(),
+    })
+    .nullish(),
+  recentRuns: zod.array(
+    zod.object({
+      id: zod.number(),
+      startedAt: zod.coerce.date(),
+      completedAt: zod.coerce.date().nullish(),
+      status: zod.string(),
+      articlesFound: zod.number(),
+      articlesNew: zod.number(),
+      sourcesProcessed: zod.number(),
+      sourcesFailed: zod.number(),
+      errorMsg: zod.string().nullish(),
+    }),
+  ),
+  nextRunIn: zod.string(),
+});
+
+/**
+ * @summary List all configured sources
+ */
+export const ListSourcesResponse = zod.object({
+  sources: zod.array(
+    zod.object({
+      id: zod.number(),
+      name: zod.string(),
+      url: zod.string(),
+      type: zod.string(),
+      defaultCategory: zod.string(),
+      isActive: zod.boolean(),
+      lastScrapedAt: zod.coerce.date().nullish(),
+      successCount: zod.number(),
+      failCount: zod.number(),
+      lastError: zod.string().nullish(),
+    }),
+  ),
 });
