@@ -1,6 +1,6 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "cd /vercel/path0 && pnpm --filter @workspace/leonida-vice run build:vercel",
+  "buildCommand": "pnpm --filter @workspace/leonida-vice run build:vercel",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
