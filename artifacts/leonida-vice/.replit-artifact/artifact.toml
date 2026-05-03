@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "LeonidaVice"
+version = "1.0.0"
+id = "artifacts/leonida-vice"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18397
+
+[services.development]
+run = "pnpm --filter @workspace/leonida-vice run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/leonida-vice", "run", "build" ]
+publicDir = "artifacts/leonida-vice/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18397"
+BASE_PATH = "/"

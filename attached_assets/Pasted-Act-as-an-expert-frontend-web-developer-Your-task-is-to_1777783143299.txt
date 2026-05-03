@@ -1,0 +1,31 @@
+Act as an expert frontend web developer. Your task is to create an exact visual replica of the modern desktop Facebook UI (the main News Feed view). 
+
+I have attached documents containing my personal information, text, and data. Please read through these documents and use my information to populate the names, profile details, feed posts, and sidebar content instead of generic placeholder text.
+
+Please use the following Tech Stack: 
+- React 
+- Tailwind CSS (for styling)
+- Lucide React or FontAwesome (for icons)
+
+Here are the strict design and layout requirements:
+
+1. Global Styling:
+- The main body background must be the signature Facebook light gray: `#F0F2F5`.
+- All content containers (posts, menus) must have a white background (`#FFFFFF`), rounded corners (`rounded-lg`), and a very subtle drop shadow (`shadow-sm`).
+- The primary brand color for icons and active states is Facebook Blue: `#1877F2`.
+
+2. Top Navigation Bar:
+- Fixed to the top, white background, shadow.
+- Left side: A circular logo (use a placeholder or my provided logo) and a rounded, gray search input bar.
+- Center: 5 navigation icons evenly spaced (Home, Watch, Marketplace, Groups, Gaming). The Home icon should be active (blue with a blue bottom border).
+- Right side: Menu, Messenger, Notifications, and Profile picture icons (circular and gray).
+
+3. Three-Column Main Layout:
+- Left Sidebar (approx 25% width): A sticky vertical menu. Use the info from my document to populate the top link (My Profile), followed by options like Friends, Memories, Saved, Groups, etc.
+- Center Feed (approx 50% width): 
+   - Top: A horizontal scrollable "Stories" section.
+   - Middle: A "Create Post" box with my profile picture, a text input ("What's on your mind?"), and buttons for Live Video, Photo/Video, and Feeling/Activity.
+   - Bottom: A feed of at least 3 distinct posts populated entirely using the text, dates, and information from my attached documents. Include standard interaction buttons (Like, Comment, Share) at the bottom of each post.
+- Right Sidebar (approx 25% width): A sticky "Contacts" section showing a list of names (use names from my document) with small green "online" indicator dots.
+
+Please generate the complete, functioning code for this frontend, ensuring it is responsive and cleanly structured into components if possible.
