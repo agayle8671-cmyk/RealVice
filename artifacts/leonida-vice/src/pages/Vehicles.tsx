@@ -1,5 +1,6 @@
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
 
 const VEHICLES = [
   {
@@ -68,31 +69,15 @@ const VEHICLES = [
 ];
 
 const WEAPONS = [
-  {
-    category: "Handguns",
-    items: ["Glock 19 (Pistol)", "Polymer Pistol", "Beretta Px4 Storm (Combat Pistol)"],
-  },
-  {
-    category: "SMGs / Shotguns",
-    items: ["Micro SMG", "Compact SMG", "Pump Action Shotgun"],
-  },
-  {
-    category: "Rifles / LMGs",
-    items: ["M4 (Assault Rifle)", "AK-47", "Heavy Machine Gun"],
-  },
-  {
-    category: "Melee",
-    items: ["Knife", "Baseball Bat", "Pool Cue", "Crowbar"],
-  },
-  {
-    category: "Equipment",
-    items: ["Trauma Kit", "Auto Dialer", "Tracker Jammer", "Immobilizer Bypass", "Slim Jim", "Lockpick"],
-  },
-  {
-    category: "Consumables",
-    items: ["Painkillers", "Soda", "Food", "Fruit", "Wine", "Cigarettes"],
-  },
+  { category: "Handguns", items: ["Glock 19 (Pistol)", "Polymer Pistol", "Beretta Px4 Storm (Combat Pistol)"] },
+  { category: "SMGs / Shotguns", items: ["Micro SMG", "Compact SMG", "Pump Action Shotgun"] },
+  { category: "Rifles / LMGs", items: ["M4 (Assault Rifle)", "AK-47", "Heavy Machine Gun"] },
+  { category: "Melee", items: ["Knife", "Baseball Bat", "Pool Cue", "Crowbar"] },
+  { category: "Equipment", items: ["Trauma Kit", "Auto Dialer", "Tracker Jammer", "Immobilizer Bypass", "Slim Jim", "Lockpick"] },
+  { category: "Consumables", items: ["Painkillers", "Soda", "Food", "Fruit", "Wine", "Cigarettes"] },
 ];
+
+const FILTERS = ["All", "Sports", "SUVs", "Off-Road", "Watercraft", "Utility", "Emergency"];
 
 export default function Vehicles() {
   return (
@@ -100,72 +85,139 @@ export default function Vehicles() {
       <NavBar />
 
       <main className="max-w-screen-xl mx-auto px-4 py-10">
-        {/* Header */}
-        <div className="border-b-[3px] border-[#1A1A1A] pb-6 mb-10">
+        <div className="border-b-[3px] border-[#1A1A1A] pb-6 mb-8">
           <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-widest mb-2">State of Leonida</div>
           <h1 className="font-playfair font-black text-[3rem] leading-none mb-3">Vehicles & Arsenal</h1>
           <p className="text-[1.1rem] text-[#444] max-w-3xl leading-relaxed">
-            GTA VI's vehicle and weapon systems emphasize variety and high-fidelity customization. The roster spans muscle cars to airboats — reflecting the diverse terrain of the State of Leonida. The arsenal has been redesigned for systemic realism, with grounded reload animations and limited carry capacity.
+            A GTACars-style catalog of confirmed Leonida transport, performance, and weapon data — optimized for quick browsing.
           </p>
         </div>
 
-        {/* Weapon carry callout */}
-        <div className="bg-[#1A1A1A] text-white p-6 mb-10">
-          <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-widest mb-2">Weapon System Change</div>
-          <p className="text-[0.9rem] text-[#CCC] leading-relaxed max-w-3xl">
-            GTA VI moves away from carrying an infinite arsenal. Players have <strong className="text-white">primary and secondary handgun slots</strong> and can carry only <strong className="text-white">one large assault weapon</strong> at a time. Additional gear is stowed in the trunk of their personal vehicle. This shift toward tactical realism mirrors Red Dead Redemption 2's approach to loadout management.
-          </p>
-        </div>
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <aside className="w-full lg:w-[260px] shrink-0 sticky top-4">
+            <div className="border border-[#E0E0E0] bg-[#F7F7F7] p-4 mb-4">
+              <div className="flex items-center gap-2 mb-3 text-[#1A1A1A] font-bold uppercase text-[0.75rem] tracking-widest">
+                <Filter className="w-4 h-4" /> Filters
+              </div>
+              <div className="space-y-2">
+                {FILTERS.map((f, i) => (
+                  <button
+                    key={f}
+                    className={`w-full text-left px-3 py-2 text-[0.85rem] border transition-colors ${i === 0 ? "bg-[#C41230] text-white border-[#C41230]" : "bg-white text-[#444] border-[#E0E0E0] hover:border-[#C41230] hover:text-[#C41230]"}`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {/* Vehicles */}
-        <section className="mb-12">
-          <h2 className="font-playfair font-bold text-[1.8rem] border-b border-[#E0E0E0] pb-3 mb-6">Confirmed Vehicles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {VEHICLES.map((cat) => (
-              <div key={cat.category} className="border border-[#E0E0E0] overflow-hidden">
-                <div className="px-4 py-3 text-white font-bold text-[0.9rem] uppercase tracking-wide" style={{ backgroundColor: cat.color }}>
-                  {cat.category}
-                </div>
-                <div className="divide-y divide-[#E0E0E0]">
-                  {cat.models.map((v) => (
-                    <div key={v.name} className="px-4 py-3 flex items-start gap-3">
-                      <span className="font-bold text-[0.875rem] shrink-0 w-36 text-[#1A1A1A]">{v.name}</span>
-                      <span className="text-[0.8rem] text-[#666]">{v.note}</span>
+            <div className="border border-[#E0E0E0] p-4">
+              <div className="flex items-center gap-2 mb-3 text-[#1A1A1A] font-bold uppercase text-[0.75rem] tracking-widest">
+                <Search className="w-4 h-4" /> Search
+              </div>
+              <div className="bg-white border border-[#E0E0E0] px-3 py-2 text-[0.85rem] text-[#999]">
+                Search vehicle name...
+              </div>
+            </div>
+          </aside>
+
+          <div className="flex-1 min-w-0">
+            <section className="border border-[#E0E0E0] mb-8">
+              <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_1fr]">
+                <div className="relative bg-[#0E1B28] text-white min-h-[360px] flex items-end">
+                  <img
+                    src="https://preview.redd.it/etq2a4l8etyg1.jpeg?width=640&crop=smart&auto=webp&s=9eaca6d4cfb2c30f5c42d63f3f927fc197f28f47"
+                    alt="Featured vehicle"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover opacity-85"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="relative p-6 max-w-xl">
+                    <div className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/70 mb-2">Featured</div>
+                    <h2 className="font-playfair font-black text-[2.4rem] leading-tight mb-2">Jason&apos;s house cruiser</h2>
+                    <p className="text-[0.9rem] text-white/80 leading-relaxed">
+                      GTACars-style hero card: large image, quick facts, and a clean catalog feel with the article title overlaid.
+                    </p>
+                    <div className="mt-4 flex items-center gap-3 text-[0.75rem] uppercase tracking-widest">
+                      <span className="bg-[#C41230] px-3 py-1">Vice City</span>
+                      <span className="bg-white/15 px-3 py-1">Confirmed</span>
                     </div>
-                  ))}
+                  </div>
+                </div>
+                <div className="bg-white p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-widest mb-1">Catalog</div>
+                      <h3 className="font-playfair font-bold text-[1.4rem]">Leonida Vehicle Index</h3>
+                    </div>
+                    <div className="flex gap-2 text-[#666]">
+                      <button className="border border-[#E0E0E0] p-2 hover:border-[#C41230] hover:text-[#C41230]"><ChevronLeft className="w-4 h-4" /></button>
+                      <button className="border border-[#E0E0E0] p-2 hover:border-[#C41230] hover:text-[#C41230]"><ChevronRight className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {VEHICLES.slice(0, 4).map((cat) => (
+                      <div key={cat.category} className="border border-[#E0E0E0] p-3 hover:border-[#C41230] transition-colors">
+                        <div className="text-[0.65rem] uppercase tracking-widest text-[#999] mb-1">{cat.category}</div>
+                        <div className="font-bold text-[0.95rem] mb-1">{cat.models[0].name}</div>
+                        <div className="text-[0.8rem] text-[#666] leading-relaxed">{cat.models[0].note}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
+            </section>
 
-        {/* "Donked" callout */}
-        <div className="bg-[#F7F7F7] border border-[#E0E0E0] p-6 mb-12">
-          <h3 className="font-bold text-[1rem] uppercase tracking-wide mb-2">"Donked" Vehicles</h3>
-          <p className="text-[0.9rem] text-[#444] leading-relaxed">
-            GTA VI introduces <strong>"Donked"</strong> vehicles — custom cars with extremely large wheels — as a direct homage to Florida's specific automotive subculture. This represents one of several regional customization styles confirmed for the game's vehicle modification system.
-          </p>
-        </div>
-
-        {/* Weapons */}
-        <section className="mb-6">
-          <h2 className="font-playfair font-bold text-[1.8rem] border-b border-[#E0E0E0] pb-3 mb-6">Confirmed Arsenal</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {WEAPONS.map((w) => (
-              <div key={w.category} className="border border-[#E0E0E0] p-4">
-                <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-wider mb-3">{w.category}</div>
-                <ul className="space-y-1">
-                  {w.items.map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-[0.875rem] text-[#444]">
-                      <span className="w-1.5 h-1.5 bg-[#1A1A1A] rounded-full shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+            <section className="mb-10">
+              <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-2 mb-5">
+                <h2 className="font-playfair font-bold text-[1.6rem]">Vehicle Catalog</h2>
+                <div className="text-[0.75rem] text-[#999] uppercase tracking-widest">Browse by category</div>
               </div>
-            ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {VEHICLES.map((cat) => (
+                  <article key={cat.category} className="border border-[#E0E0E0] bg-white overflow-hidden">
+                    <div className="px-4 py-3 text-white font-bold text-[0.9rem] uppercase tracking-wide" style={{ backgroundColor: cat.color }}>
+                      {cat.category}
+                    </div>
+                    <div className="divide-y divide-[#E0E0E0]">
+                      {cat.models.map((v, idx) => (
+                        <div key={v.name} className="px-4 py-3 grid grid-cols-[1fr_auto] gap-4 items-start hover:bg-[#FAFAFA]">
+                          <div>
+                            <div className="font-bold text-[0.92rem] text-[#1A1A1A]">{v.name}</div>
+                            <div className="text-[0.78rem] text-[#666] leading-relaxed mt-1">{v.note}</div>
+                          </div>
+                          <div className="text-[0.65rem] uppercase tracking-widest text-[#999] pt-1">#{idx + 1}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="mb-10">
+              <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-2 mb-5">
+                <h2 className="font-playfair font-bold text-[1.6rem]">Confirmed Arsenal</h2>
+                <div className="text-[0.75rem] text-[#999] uppercase tracking-widest">Loadout</div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {WEAPONS.map((w) => (
+                  <div key={w.category} className="border border-[#E0E0E0] p-4 bg-white">
+                    <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-wider mb-3">{w.category}</div>
+                    <ul className="space-y-1">
+                      {w.items.map((item) => (
+                        <li key={item} className="flex items-center gap-2 text-[0.875rem] text-[#444]">
+                          <span className="w-1.5 h-1.5 bg-[#1A1A1A] rounded-full shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
       </main>
 
       <Footer />
