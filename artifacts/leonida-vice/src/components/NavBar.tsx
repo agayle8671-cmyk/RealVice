@@ -1,57 +1,54 @@
-import { Search, Home, Tv, Store, UsersRound, Gamepad2, CircleEllipsis, MessageCircle, Bell } from "lucide-react";
-
 export function NavBar() {
   return (
-    <div className="fixed top-0 left-0 right-0 h-[56px] bg-white shadow-sm flex items-center justify-between px-4 z-50">
-      <div className="flex items-center gap-2 w-[320px]">
-        <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center text-white font-bold text-lg">
-          LV
+    <div className="w-full bg-[#F5EFE0] border-b-[4px] border-[#2C1F0E] relative pb-2 pt-2 z-50">
+      <div className="absolute bottom-[-8px] left-0 right-0 border-b-[1px] border-[#2C1F0E]" />
+      
+      <div className="max-w-[1200px] mx-auto px-4 flex flex-col items-center">
+        {/* Top Strip */}
+        <div className="w-full flex justify-between items-center border-t-[1px] border-b-[1px] border-[#2C1F0E] py-1 mb-4">
+          <span className="font-libre text-[11px] font-variant-small-caps uppercase tracking-widest text-[#1A1208]">
+            Saturday, May 3, 2026 — Vol. XCIV, No. 12
+          </span>
+          <span className="font-libre text-[11px] font-variant-small-caps uppercase tracking-widest text-[#1A1208]">
+            LEONIDA METROPOLITAN EDITION
+          </span>
         </div>
-        <div className="hidden md:flex items-center bg-[#F0F2F5] rounded-full px-3 py-2 w-[240px]">
-          <Search className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
-          <input 
-            type="text" 
-            placeholder="Search LeonidaVice" 
-            className="bg-transparent border-none outline-none text-[15px] placeholder:text-gray-500 w-full"
-          />
+
+        {/* Masthead */}
+        <div className="text-center mb-2">
+          <h1 className="font-blackletter text-6xl md:text-7xl lg:text-[5.5rem] text-[#1A1208] leading-none mb-1 tracking-tight">
+            THE LEONIDA VICE
+          </h1>
+          <p className="font-playfair italic text-sm md:text-[15px] text-[#1A1208]">
+            "All The Intelligence Fit To Print — Vice City's Premier Daily Intelligence Report"
+          </p>
         </div>
-      </div>
 
-      <div className="hidden md:flex items-center justify-center flex-1 h-full max-w-[600px] gap-2">
-        <NavTab icon={Home} active />
-        <NavTab icon={Tv} />
-        <NavTab icon={Store} />
-        <NavTab icon={UsersRound} />
-        <NavTab icon={Gamepad2} />
-      </div>
+        {/* Double Rule */}
+        <div className="w-full border-t-[3px] border-[#2C1F0E] mb-[2px]" />
+        <div className="w-full border-t-[1px] border-[#2C1F0E] mb-3" />
 
-      <div className="flex items-center justify-end gap-2 w-[320px]">
-        <IconButton icon={CircleEllipsis} />
-        <IconButton icon={MessageCircle} />
-        <IconButton icon={Bell} />
-        <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center text-white font-bold cursor-pointer hover:opacity-90 transition-opacity ml-1">
-          LV
+        {/* Nav Tabs */}
+        <div className="flex items-center justify-center gap-4 md:gap-8 overflow-x-auto w-full pb-1 scrollbar-hide">
+          <NavTab text="HOME" active />
+          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
+          <NavTab text="MARKETS" />
+          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
+          <NavTab text="INTELLIGENCE" />
+          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
+          <NavTab text="COUNTY RECORDS" />
+          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
+          <NavTab text="VEHICLE REGISTRY" />
         </div>
       </div>
     </div>
   );
 }
 
-function NavTab({ icon: Icon, active }: { icon: any, active?: boolean }) {
+function NavTab({ text, active }: { text: string, active?: boolean }) {
   return (
-    <div className={`relative h-full flex items-center justify-center px-10 cursor-pointer transition-colors ${!active && 'hover:bg-gray-100 rounded-lg my-1'}`}>
-      <Icon className={`w-7 h-7 ${active ? 'text-[#1877F2]' : 'text-gray-500'}`} />
-      {active && (
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#1877F2] rounded-t-md" />
-      )}
-    </div>
-  );
-}
-
-function IconButton({ icon: Icon }: { icon: any }) {
-  return (
-    <div className="w-10 h-10 rounded-full bg-[#E4E6EB] hover:bg-[#D8DADF] flex items-center justify-center cursor-pointer transition-colors">
-      <Icon className="w-5 h-5 text-black" />
+    <div className={`font-libre text-[12px] uppercase tracking-widest cursor-pointer whitespace-nowrap ${active ? 'text-[#8B0000] font-bold border-b border-[#8B0000]' : 'text-[#1A1208] hover:text-[#8B0000]'}`}>
+      {text}
     </div>
   );
 }

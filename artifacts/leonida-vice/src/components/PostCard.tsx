@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ThumbsUp, MessageSquare, Share2, MoreHorizontal, X, Globe2 } from "lucide-react";
 
 interface PostProps {
   post: {
@@ -15,76 +14,69 @@ interface PostProps {
 
 export function PostCard({ post }: PostProps) {
   const [liked, setLiked] = useState(false);
-  const initials = post.author.split(' ').map(w => w[0]).join('').substring(0, 2);
+  
+  // Transform data for newspaper style
+  const byline = `By ${post.author.toUpperCase()} | Staff Correspondent`;
+  const dateline = `VICE CITY — ${post.time.toUpperCase()} AGO`;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm">
-      <div className="p-3">
-        <div className="flex justify-between items-start mb-2">
-          <div className="flex gap-2 items-center">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center font-bold text-blue-700">
-              {initials}
+    <div className="mb-8">
+      <div className="border-[2px] border-[#2C1F0E] bg-[#F5EFE0] p-4 md:p-6">
+        
+        <div className="mb-4 pb-4 border-b-[1px] border-double border-[#2C1F0E]">
+          {post.badge && (
+            <div className="mb-2">
+              <span className="font-libre text-[12px] font-bold text-[#8B0000] border-[2px] border-[#8B0000] px-2 py-0.5 uppercase tracking-widest inline-block">
+                [{post.badge}]
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-1">
-                <span className="font-semibold text-[15px] hover:underline cursor-pointer">{post.author}</span>
-                {post.badge && (
-                  <span className="text-[11px] font-bold bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded uppercase">
-                    {post.badge}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-1 text-[13px] text-gray-500">
-                <span className="hover:underline cursor-pointer">{post.time}</span>
-                <span>·</span>
-                <Globe2 className="w-3.5 h-3.5" />
-              </div>
+          )}
+          
+          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-2">
+            <div className="font-libre text-[12px] font-bold uppercase tracking-widest text-[#1A1208]">
+              {byline}
             </div>
-          </div>
-          <div className="flex gap-1">
-            <div className="w-9 h-9 rounded-full hover:bg-[#F0F2F5] flex items-center justify-center cursor-pointer text-gray-500">
-              <MoreHorizontal className="w-5 h-5" />
-            </div>
-            <div className="w-9 h-9 rounded-full hover:bg-[#F0F2F5] flex items-center justify-center cursor-pointer text-gray-500">
-              <X className="w-5 h-5" />
+            <div className="font-libre text-[11px] uppercase tracking-wider text-[#1A1208]/70 italic">
+              {dateline}
             </div>
           </div>
         </div>
 
-        <div className="text-[15px] mb-3 whitespace-pre-wrap">
-          {post.text}
+        <div className="font-im-fell text-[17px] md:text-[18px] leading-[1.7] text-[#1A1208] text-justify mb-6 whitespace-pre-wrap columns-1 md:columns-2 gap-6">
+          {/* Drop cap for the first letter if we want to get fancy, but let's just render the text */}
+          <span className="float-left text-5xl font-blackletter leading-[0.8] pr-2 pt-1 text-[#1A1208]">
+            {post.text.charAt(0)}
+          </span>
+          {post.text.substring(1)}
+        </div>
+
+        <div className="border-t-[1px] border-[#2C1F0E] pt-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="font-libre text-[12px] uppercase tracking-wider text-[#1A1208] italic">
+            {post.likes.replace('K', ',000')} Readers | {post.comments} Responses | {post.shares} Reprintings
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setLiked(!liked)}
+              className={`font-libre text-[12px] font-bold uppercase tracking-widest border-[1px] px-3 py-1 transition-colors ${liked ? 'border-[#8B0000] text-[#8B0000] bg-[#8B0000]/10' : 'border-[#2C1F0E] text-[#1A1208] hover:bg-[#D4C5A9]'}`}
+            >
+              Endorse
+            </button>
+            <button className="font-libre text-[12px] font-bold uppercase tracking-widest border-[1px] border-[#2C1F0E] text-[#1A1208] hover:bg-[#D4C5A9] px-3 py-1 transition-colors">
+              Respond
+            </button>
+            <button className="font-libre text-[12px] font-bold uppercase tracking-widest border-[1px] border-[#2C1F0E] text-[#1A1208] hover:bg-[#D4C5A9] px-3 py-1 transition-colors">
+              Reprint
+            </button>
+          </div>
         </div>
       </div>
-
-      <div className="px-4 py-2 flex items-center justify-between text-[15px] text-gray-500 border-b border-gray-200 mx-2">
-        <div className="flex items-center gap-1.5">
-          <div className="w-[18px] h-[18px] bg-[#1877F2] rounded-full flex items-center justify-center">
-            <ThumbsUp className="w-2.5 h-2.5 text-white fill-white" />
-          </div>
-          <span>{post.likes}</span>
-        </div>
-        <div className="flex gap-3">
-          <span className="hover:underline cursor-pointer">{post.comments} comments</span>
-          <span className="hover:underline cursor-pointer">{post.shares} shares</span>
-        </div>
-      </div>
-
-      <div className="p-1 mx-2 flex items-center justify-between">
-        <button 
-          onClick={() => setLiked(!liked)}
-          className={`flex-1 flex items-center justify-center gap-2 p-1.5 rounded-lg hover:bg-[#F0F2F5] transition-colors ${liked ? 'text-[#1877F2]' : 'text-gray-500'}`}
-        >
-          <ThumbsUp className={`w-5 h-5 ${liked ? 'fill-[#1877F2]' : ''}`} />
-          <span className="font-semibold text-[15px]">Like</span>
-        </button>
-        <button className="flex-1 flex items-center justify-center gap-2 p-1.5 rounded-lg hover:bg-[#F0F2F5] transition-colors text-gray-500">
-          <MessageSquare className="w-5 h-5" />
-          <span className="font-semibold text-[15px]">Comment</span>
-        </button>
-        <button className="flex-1 flex items-center justify-center gap-2 p-1.5 rounded-lg hover:bg-[#F0F2F5] transition-colors text-gray-500">
-          <Share2 className="w-5 h-5" />
-          <span className="font-semibold text-[15px]">Share</span>
-        </button>
+      
+      {/* Ornamental Divider between posts */}
+      <div className="mt-8 mb-2 flex items-center justify-center opacity-70">
+        <div className="w-16 h-[1px] bg-[#2C1F0E]"></div>
+        <div className="mx-4 text-[#2C1F0E]">♦</div>
+        <div className="w-16 h-[1px] bg-[#2C1F0E]"></div>
       </div>
     </div>
   );

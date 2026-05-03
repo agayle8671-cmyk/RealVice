@@ -1,25 +1,29 @@
 export function Stories() {
   const stories = [
-    { name: "Vice City Reporter", bg: "bg-gradient-to-br from-blue-400 to-blue-600", avatar: "LV" },
-    { name: "Leonida Daily", bg: "bg-gradient-to-br from-purple-400 to-pink-500", avatar: "LD" },
-    { name: "BAWSAQ Update", bg: "bg-gradient-to-br from-green-400 to-emerald-600", avatar: "BU" },
-    { name: "Merryweather Intel", bg: "bg-gradient-to-br from-red-400 to-orange-500", avatar: "MI" },
-    { name: "Ambrosia County", bg: "bg-gradient-to-br from-yellow-400 to-orange-400", avatar: "AC" },
+    { name: "Vice City Reporter", avatar: "VR" },
+    { name: "Leonida Daily", avatar: "LD" },
+    { name: "BAWSAQ Update", avatar: "BU" },
+    { name: "Merryweather Intel", avatar: "MI" },
+    { name: "Ambrosia County", avatar: "AC" },
   ];
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      {stories.map((story, i) => (
-        <div key={i} className={`relative w-[112px] h-[200px] rounded-xl shrink-0 cursor-pointer overflow-hidden ${story.bg} shadow-sm group`}>
-          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
-          <div className="absolute top-3 left-3 w-10 h-10 rounded-full border-4 border-blue-500 bg-white flex items-center justify-center font-bold text-xs text-blue-600">
-            {story.avatar}
+    <div className="mb-6">
+      <h2 className="font-playfair font-bold text-lg text-[#1A1208] mb-3 uppercase tracking-wide border-y-[1px] border-[#2C1F0E] py-1 text-center">
+        DISPATCHES FROM THE FIELD
+      </h2>
+      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+        {stories.map((story, i) => (
+          <div key={i} className="relative w-[120px] h-[160px] border-[2px] border-[#2C1F0E] border-t-[6px] border-t-[#8B0000] bg-[#E8DCC8] shrink-0 cursor-pointer group flex flex-col p-2 hover:bg-[#D4C5A9] transition-colors">
+            <div className="w-10 h-10 border-[2px] border-[#2C1F0E] bg-[#F5EFE0] flex items-center justify-center font-playfair font-bold text-sm text-[#1A1208] mb-auto">
+              {story.avatar}
+            </div>
+            <div className="font-playfair font-bold italic text-[#1A1208] text-[14px] leading-tight">
+              {story.name}
+            </div>
           </div>
-          <div className="absolute bottom-3 left-3 right-3 text-white font-medium text-[13px] leading-tight drop-shadow-md">
-            {story.name}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

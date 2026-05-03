@@ -48,25 +48,33 @@ const POSTS = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F0F2F5]">
+    <div className="min-h-screen bg-[#F5EFE0] text-[#1A1208]">
       <NavBar />
-      <div className="pt-[56px] max-w-[1600px] mx-auto flex justify-center">
-        <div className="hidden lg:block w-[360px] shrink-0 p-4">
-          <div className="sticky top-[72px]">
+      
+      {/* Main Newspaper Layout */}
+      <div className="max-w-[1400px] mx-auto flex justify-center pt-6 px-4">
+        {/* Left Column */}
+        <div className="hidden lg:block w-[300px] shrink-0">
+          <div className="sticky top-[10px]">
             <LeftSidebar />
           </div>
         </div>
         
-        <div className="w-full max-w-[680px] shrink-0 px-0 sm:px-8 py-4 sm:py-6 flex flex-col gap-4">
+        {/* Center Column - Feed */}
+        <div className="w-full max-w-[720px] shrink-0 px-0 md:px-8 py-2">
           <Stories />
           <CreatePost />
-          {POSTS.map(post => (
-            <PostCard key={post.id} post={post} />
-          ))}
+          
+          <div className="mt-8">
+            {POSTS.map(post => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
         </div>
         
-        <div className="hidden xl:block w-[360px] shrink-0 p-4">
-          <div className="sticky top-[72px]">
+        {/* Right Column */}
+        <div className="hidden xl:block w-[300px] shrink-0">
+          <div className="sticky top-[10px]">
             <RightSidebar />
           </div>
         </div>

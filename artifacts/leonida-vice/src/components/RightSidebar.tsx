@@ -1,85 +1,80 @@
-import { Search } from "lucide-react";
-
 export function RightSidebar() {
   const contacts = [
-    { name: "Jason Duval", color: "bg-blue-200 text-blue-700" },
-    { name: "Lucia Caminos", color: "bg-purple-200 text-purple-700" },
-    { name: "Trevor Philips", color: "bg-orange-200 text-orange-700" },
-    { name: "Michael De Santa", color: "bg-green-200 text-green-700" },
-    { name: "Franklin Clinton", color: "bg-teal-200 text-teal-700" },
-    { name: "Lester Crest", color: "bg-gray-200 text-gray-700" },
-    { name: "Ron Jakowski", color: "bg-yellow-200 text-yellow-700" },
-    { name: "Dave Norton", color: "bg-indigo-200 text-indigo-700" },
+    "Jason Duval", "Lucia Caminos", "Trevor Philips", 
+    "Michael De Santa", "Franklin Clinton", "Lester Crest", 
+    "Ron Jakowski", "Dave Norton"
   ];
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-6 pl-4 border-l-[1px] border-[#2C1F0E] min-h-[calc(100vh-200px)]">
+      <h2 className="font-playfair font-bold text-xl text-[#1A1208] mb-2 border-b-[2px] border-[#2C1F0E] pb-2 uppercase tracking-wide">
+        NOTICES & CORRESPONDENCE
+      </h2>
+
       <div>
-        <h3 className="text-[17px] font-semibold text-gray-500 mb-2">Sponsored</h3>
+        <div className="flex items-center justify-center gap-2 mb-3 opacity-80">
+          <div className="flex-1 h-[1px] bg-[#2C1F0E]"></div>
+          <h3 className="font-libre text-[11px] font-bold text-[#1A1208] uppercase tracking-widest">
+            COMMERCIAL NOTICES
+          </h3>
+          <div className="flex-1 h-[1px] bg-[#2C1F0E]"></div>
+        </div>
+        
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#E4E6EB] cursor-pointer transition-colors">
-            <div className="w-[110px] h-[110px] rounded-lg bg-gray-200 shrink-0" />
-            <div className="flex flex-col">
-              <span className="font-semibold text-[15px]">Legendary Motorsport — GTA VI Exclusive Vehicles. Shop now.</span>
-              <span className="text-[13px] text-gray-500">legendarymotorsport.net</span>
-            </div>
+          <div className="border-[2px] border-[#2C1F0E] p-3 text-center bg-[#E8DCC8] hover:bg-[#D4C5A9] cursor-pointer transition-colors">
+            <h4 className="font-playfair font-bold text-[#1A1208] uppercase mb-1 leading-tight">Legendary Motorsport</h4>
+            <p className="font-im-fell text-[13px] text-[#1A1208] italic mb-2">GTA VI Exclusive Vehicles. Shop now.</p>
+            <span className="font-libre text-[10px] uppercase tracking-widest text-[#8B0000] font-bold">legendarymotorsport.net</span>
           </div>
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#E4E6EB] cursor-pointer transition-colors">
-            <div className="w-[110px] h-[110px] rounded-lg bg-gray-200 shrink-0" />
-            <div className="flex flex-col">
-              <span className="font-semibold text-[15px]">Ammu-Nation — Gear up for Leonida. Limited stock.</span>
-              <span className="text-[13px] text-gray-500">ammunation.com</span>
-            </div>
+          
+          <div className="border-[2px] border-[#2C1F0E] p-3 text-center bg-[#E8DCC8] hover:bg-[#D4C5A9] cursor-pointer transition-colors">
+            <h4 className="font-playfair font-bold text-[#1A1208] uppercase mb-1 leading-tight">Ammu-Nation</h4>
+            <p className="font-im-fell text-[13px] text-[#1A1208] italic mb-2">Gear up for Leonida. Limited stock.</p>
+            <span className="font-libre text-[10px] uppercase tracking-widest text-[#8B0000] font-bold">ammunation.com</span>
           </div>
         </div>
       </div>
 
-      <div className="h-[1px] bg-gray-300" />
+      <div className="w-full border-t-[3px] border-[#2C1F0E] border-double" />
 
       <div>
-        <div className="flex items-center justify-between mb-2 px-2">
-          <h3 className="text-[17px] font-semibold text-gray-500">Contacts</h3>
-          <div className="flex gap-2 text-gray-500">
-            <div className="w-8 h-8 rounded-full hover:bg-[#E4E6EB] flex items-center justify-center cursor-pointer">
-              <Search className="w-4 h-4" />
-            </div>
-            <div className="w-8 h-8 rounded-full hover:bg-[#E4E6EB] flex items-center justify-center cursor-pointer">
-              <span className="font-bold pb-2">...</span>
-            </div>
-          </div>
+        <div className="flex items-center justify-between mb-3 px-1 border-b-[1px] border-[#2C1F0E] pb-1">
+          <h3 className="font-libre text-[12px] font-bold text-[#1A1208] uppercase tracking-widest">
+            CORRESPONDENTS ON THE WIRE
+          </h3>
         </div>
         
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           {contacts.map((contact, i) => (
-            <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#E4E6EB] cursor-pointer transition-colors relative">
-              <div className="relative">
-                <div className={`w-9 h-9 rounded-full ${contact.color} flex items-center justify-center font-bold text-sm`}>
-                  {contact.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#F0F2F5] rounded-full" />
-              </div>
-              <span className="font-medium text-[15px]">{contact.name}</span>
+            <div key={i} className="flex items-center justify-between px-2 py-1.5 border-b-[1px] border-dotted border-[#2C1F0E] hover:bg-[#D4C5A9] cursor-pointer transition-colors group">
+              <span className="font-libre text-[12px] font-bold text-[#1A1208] uppercase tracking-wider group-hover:text-[#8B0000]">
+                {contact}
+              </span>
+              {/* Telegraph-style indicator */}
+              <div className="w-2 h-2 bg-[#1A1208] rounded-full border-[1px] border-[#F5EFE0]" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="h-[1px] bg-gray-300" />
+      <div className="w-full border-t-[1px] border-[#2C1F0E]" />
 
       <div>
-        <h3 className="text-[17px] font-semibold text-gray-500 mb-2 px-2">Group conversations</h3>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#E4E6EB] cursor-pointer transition-colors">
-            <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-gray-600 text-sm">
+        <h3 className="font-libre text-[12px] font-bold text-[#1A1208] uppercase tracking-widest mb-3 px-1 border-b-[1px] border-[#2C1F0E] pb-1">
+          PRESS ASSOCIATIONS
+        </h3>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3 p-2 border-[1px] border-[#2C1F0E] hover:bg-[#D4C5A9] cursor-pointer transition-colors bg-[#E8DCC8]">
+            <div className="font-playfair font-bold text-[18px] text-[#1A1208] border-r-[1px] border-[#2C1F0E] pr-2">
               LO
             </div>
-            <span className="font-medium text-[15px]">Leonida Operators</span>
+            <span className="font-libre text-[12px] font-bold text-[#1A1208] uppercase tracking-wider">Leonida Operators</span>
           </div>
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#E4E6EB] cursor-pointer transition-colors">
-            <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-gray-600 text-sm">
+          <div className="flex items-center gap-3 p-2 border-[1px] border-[#2C1F0E] hover:bg-[#D4C5A9] cursor-pointer transition-colors bg-[#E8DCC8]">
+            <div className="font-playfair font-bold text-[18px] text-[#1A1208] border-r-[1px] border-[#2C1F0E] pr-2">
               VC
             </div>
-            <span className="font-medium text-[15px]">Vice City Crew</span>
+            <span className="font-libre text-[12px] font-bold text-[#1A1208] uppercase tracking-wider">Vice City Crew</span>
           </div>
         </div>
       </div>

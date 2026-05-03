@@ -1,33 +1,42 @@
-import { Video, Image, Smile } from "lucide-react";
-
 export function CreatePost() {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-3">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center text-white font-bold shrink-0">
-          LV
+    <div className="border-[2px] border-[#2C1F0E] bg-[#F5EFE0] p-4 mb-6 relative">
+      {/* Corner ornaments (simple borders) */}
+      <div className="absolute top-1 left-1 w-2 h-2 border-t-[2px] border-l-[2px] border-[#8B0000]" />
+      <div className="absolute top-1 right-1 w-2 h-2 border-t-[2px] border-r-[2px] border-[#8B0000]" />
+      <div className="absolute bottom-1 left-1 w-2 h-2 border-b-[2px] border-l-[2px] border-[#8B0000]" />
+      <div className="absolute bottom-1 right-1 w-2 h-2 border-b-[2px] border-r-[2px] border-[#8B0000]" />
+
+      <h3 className="font-playfair font-bold text-sm text-[#1A1208] uppercase tracking-widest text-center mb-3">
+        SUBMIT A TIP TO THE EDITORIAL DESK
+      </h3>
+      
+      <div className="flex items-start gap-3 mb-4">
+        <div className="w-10 h-10 border-[2px] border-[#2C1F0E] bg-[#E8DCC8] flex items-center justify-center text-[#1A1208] font-playfair font-bold text-sm shrink-0">
+          VR
         </div>
-        <div className="flex-1 bg-[#F0F2F5] hover:bg-[#E4E6EB] transition-colors rounded-full px-4 py-2.5 cursor-pointer">
-          <span className="text-gray-500 text-[15px]">What's on your mind, Reporter?</span>
+        <div className="flex-1 border-b-[2px] border-dashed border-[#2C1F0E] pt-2 pb-1 cursor-text">
+          <span className="font-im-fell text-[16px] text-[#1A1208]/70 italic">Record your observation here...</span>
         </div>
       </div>
       
-      <div className="h-[1px] bg-gray-200 mb-2" />
+      <div className="w-full border-t-[1px] border-[#2C1F0E] mb-3" />
       
-      <div className="flex items-center justify-between">
-        <PostAction icon={Video} color="text-red-500" text="Live Video" />
-        <PostAction icon={Image} color="text-green-500" text="Photo/Video" />
-        <PostAction icon={Smile} color="text-yellow-500" text="Feeling/Activity" />
+      <div className="flex items-center justify-between px-4">
+        <PostAction text="Wire Report" />
+        <div className="w-[1px] h-4 bg-[#2C1F0E]" />
+        <PostAction text="Photo Evidence" />
+        <div className="w-[1px] h-4 bg-[#2C1F0E]" />
+        <PostAction text="Field Observation" />
       </div>
     </div>
   );
 }
 
-function PostAction({ icon: Icon, color, text }: { icon: any, color: string, text: string }) {
+function PostAction({ text }: { text: string }) {
   return (
-    <div className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg hover:bg-[#F0F2F5] cursor-pointer transition-colors">
-      <Icon className={`w-6 h-6 ${color}`} />
-      <span className="font-semibold text-[15px] text-gray-500">{text}</span>
+    <div className="flex-1 flex items-center justify-center p-1 cursor-pointer group">
+      <span className="font-libre text-[12px] font-bold uppercase tracking-wider text-[#1A1208] group-hover:text-[#8B0000] transition-colors">{text}</span>
     </div>
   );
 }
