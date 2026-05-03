@@ -69,6 +69,7 @@ export function HeroSection({ teasers = [], featured, loading }: HeroSectionProp
                 <img
                   src={featured.videoThumbnail}
                   alt={featured.title}
+                  referrerPolicy="no-referrer"
                   className="w-full aspect-video object-cover mb-4"
                 />
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -80,6 +81,7 @@ export function HeroSection({ teasers = [], featured, loading }: HeroSectionProp
                 <img
                   src={featured.imageThumbnail}
                   alt={featured.title}
+                  referrerPolicy="no-referrer"
                   className="w-full aspect-video object-cover mb-4 cursor-pointer"
                 />
               </a>

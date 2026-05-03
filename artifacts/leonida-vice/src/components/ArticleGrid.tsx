@@ -22,6 +22,7 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
           <img
             src={(article.videoThumbnail ?? article.imageThumbnail)!}
             alt={article.title}
+            referrerPolicy="no-referrer"
             className="w-full aspect-[3/2] object-cover mb-3"
           />
           {article.isVideo && (
