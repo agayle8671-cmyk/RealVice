@@ -1,6 +1,6 @@
 {
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "cd artifacts/leonida-vice && pnpm run build:vercel",
+  "buildCommand": "pnpm --filter @workspace/leonida-vice run build:vercel",
   "outputDirectory": "artifacts/leonida-vice/dist",
   "framework": null,
   "rewrites": [
