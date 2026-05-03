@@ -1,226 +1,163 @@
-import { NavBar } from "@/components/NavBar";
-import { Footer } from "@/components/Footer";
-import { ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { VEHICLES } from "@/lib/mock-data";
+import { Car, Search, ArrowUpDown, Shield } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 
-const VEHICLES = [
-  {
-    category: "Muscle / Sports",
-    color: "#3A1A1A",
-    models: [
-      { name: "Phoenix", note: "Classic pony car — updated with RT reflections and interior detailing" },
-      { name: "Banshee", note: "Dodge Viper analog — returns as a high-performance sports car" },
-      { name: "Comet Retro", note: "Porsche 911 classic analog — collector's edition variant" },
-      { name: "Buffalo STX", note: "Dodge Challenger modern — street muscle with customization depth" },
-      { name: "Cheetah", note: "Ferrari analog — supercar class with confirmed RT body reflections" },
-    ],
-  },
-  {
-    category: "Off-Road / Pickup",
-    color: "#2A3A1A",
-    models: [
-      { name: "Caracara 4x4", note: "Ford F-150 Raptor analog — essential for Grassrivers navigation" },
-      { name: "Sandking", note: "Ford F-Series super-duty — rugged desert and marsh runner" },
-      { name: "Bobcat", note: "Classic GTA pickup truck — utility workhorse across all counties" },
-      { name: "Hellion", note: "Jeep Gladiator analog — confirmed for off-road traversal missions" },
-    ],
-  },
-  {
-    category: "Watercraft",
-    color: "#1A2A3A",
-    models: [
-      { name: "Airboat", note: "Critical for Grassrivers navigation — flat-bottom swamp runner" },
-      { name: "Sea Shark", note: "Jet ski class — high-speed personal watercraft for Keys missions" },
-      { name: "Predator", note: "Police-grade patrol boat — also available to the player" },
-      { name: "Marquis", note: "Luxury sailboat — likely tied to yacht-based heist missions" },
-      { name: "Seashark", note: "Consumer jet ski variant — common on Vice Beach shoreline" },
-    ],
-  },
-  {
-    category: "SUVs",
-    color: "#1A1A3A",
-    models: [
-      { name: "Landstalker XL", note: "Rolls-Royce Cullinan analog — luxury off-road" },
-      { name: "Jubilee", note: "Range Rover Sport analog — confirmed in trailer footage" },
-      { name: "Granger", note: "Chevrolet Suburban analog — law enforcement & civilian versions" },
-      { name: "Baller", note: "Mercedes G-Class analog — street credibility staple" },
-      { name: "Rebla GTS", note: "BMW X5 M analog — sports luxury SUV" },
-    ],
-  },
-  {
-    category: "Compact / Economy",
-    color: "#2A2A1A",
-    models: [
-      { name: "Futo", note: "Toyota Corolla / AE86 analog — drift-capable compact" },
-      { name: "Blista Compact", note: "Honda CRX analog — returning fan favourite" },
-      { name: "Dilettante", note: "Toyota Prius analog — hybrid economy car with hidden performance potential" },
-      { name: "Panto", note: "Smart ForTwo analog — smallest car in the game" },
-    ],
-  },
-  {
-    category: "Emergency / Utility",
-    color: "#1A2A2A",
-    models: [
-      { name: "Vapid Police Cruiser", note: "Ford Crown Victoria analog — standard cop car with realistic sirens" },
-      { name: "Buffalo Interceptor", note: "Dodge Charger Police Package — high-speed pursuit unit" },
-      { name: "Dashound Bus", note: "Greyhound Bus analog — long-haul passenger transport" },
-      { name: "Boxville", note: "Delivery van — mission utility vehicle across all counties" },
-    ],
-  },
-];
-
-const WEAPONS = [
-  { category: "Handguns", items: ["Glock 19 (Pistol)", "Polymer Pistol", "Beretta Px4 Storm (Combat Pistol)"] },
-  { category: "SMGs / Shotguns", items: ["Micro SMG", "Compact SMG", "Pump Action Shotgun"] },
-  { category: "Rifles / LMGs", items: ["M4 (Assault Rifle)", "AK-47", "Heavy Machine Gun"] },
-  { category: "Melee", items: ["Knife", "Baseball Bat", "Pool Cue", "Crowbar"] },
-  { category: "Equipment", items: ["Trauma Kit", "Auto Dialer", "Tracker Jammer", "Immobilizer Bypass", "Slim Jim", "Lockpick"] },
-  { category: "Consumables", items: ["Painkillers", "Soda", "Food", "Fruit", "Wine", "Cigarettes"] },
-];
-
-const FILTERS = ["All", "Sports", "SUVs", "Off-Road", "Watercraft", "Utility", "Emergency"];
+type SortConfig = {
+  key: keyof typeof VEHICLES[0] | null;
+  direction: 'asc' | 'desc';
+};
 
 export default function Vehicles() {
+  const [filter, setFilter] = useState("");
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'score', direction: 'desc' });
+  const [selectedVehicleName, setSelectedVehicleName] = useState<string>(VEHICLES[0].name);
+
+  const sortedAndFilteredVehicles = useMemo(() => {
+    let result = [...VEHICLES];
+    
+    if (filter) {
+      result = result.filter(v => 
+        v.name.toLowerCase().includes(filter.toLowerCase()) || 
+        v.class.toLowerCase().includes(filter.toLowerCase())
+      );
+    }
+    
+    if (sortConfig.key) {
+      result.sort((a, b) => {
+        // @ts-ignore - dynamic key
+        const aVal = a[sortConfig.key!];
+        // @ts-ignore
+        const bVal = b[sortConfig.key!];
+        
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    
+    return result;
+  }, [filter, sortConfig]);
+
+  const handleSort = (key: keyof typeof VEHICLES[0]) => {
+    setSortConfig({
+      key,
+      direction: sortConfig.key === key && sortConfig.direction === 'desc' ? 'asc' : 'desc',
+    });
+  };
+
+  const selectedVehicle = VEHICLES.find(v => v.name === selectedVehicleName) || VEHICLES[0];
+  
+  const radarData = [
+    { subject: 'Top Speed', A: selectedVehicle.speed, fullMark: 100 },
+    { subject: 'Acceleration', A: selectedVehicle.accel, fullMark: 100 },
+    { subject: 'Handling', A: selectedVehicle.handling, fullMark: 100 },
+    { subject: 'Braking', A: selectedVehicle.braking, fullMark: 100 },
+    { subject: 'Overall', A: selectedVehicle.score, fullMark: 100 },
+  ];
+
   return (
-    <div className="bg-white font-sans text-[#1A1A1A]">
-      <NavBar />
-
-      <main className="max-w-screen-xl mx-auto px-4 py-10">
-        <div className="border-b-[3px] border-[#1A1A1A] pb-6 mb-8">
-          <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-widest mb-2">State of Leonida</div>
-          <h1 className="font-playfair font-black text-[3rem] leading-none mb-3">Vehicles & Arsenal</h1>
-          <p className="text-[1.1rem] text-[#444] max-w-3xl leading-relaxed">
-            A GTACars-style catalog of confirmed Leonida transport, performance, and weapon data — optimized for quick browsing.
-          </p>
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
+      <div className="flex items-center justify-between border-b border-primary/20 pb-4">
+        <div>
+          <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
+            <Car className="w-6 h-6" />
+            VEHICLE PERFORMANCE DATABASE
+          </h2>
+          <p className="text-muted-foreground text-sm mt-1">Telemetry and telemetry aggregates for getaway planning.</p>
         </div>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          <aside className="w-full lg:w-[260px] shrink-0 sticky top-4">
-            <div className="border border-[#E0E0E0] bg-[#F7F7F7] p-4 mb-4">
-              <div className="flex items-center gap-2 mb-3 text-[#1A1A1A] font-bold uppercase text-[0.75rem] tracking-widest">
-                <Filter className="w-4 h-4" /> Filters
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Radar Chart Panel */}
+        <Card className="lg:col-span-1 border-primary/20 bg-black/50 order-2 lg:order-1">
+          <CardHeader>
+            <CardTitle className="text-lg text-primary">{selectedVehicle.name}</CardTitle>
+            <div className="text-xs text-muted-foreground uppercase">{selectedVehicle.class} CLASS</div>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] w-full -ml-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                  <PolarGrid stroke="hsl(var(--border))" />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                  <Radar name="Vehicle" dataKey="A" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+            
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="bg-card/50 p-2 border border-border">
+                <div className="text-[10px] text-muted-foreground uppercase mb-1">Score</div>
+                <div className="text-xl font-bold text-white">{selectedVehicle.score}</div>
               </div>
-              <div className="space-y-2">
-                {FILTERS.map((f, i) => (
-                  <button
-                    key={f}
-                    className={`w-full text-left px-3 py-2 text-[0.85rem] border transition-colors ${i === 0 ? "bg-[#C41230] text-white border-[#C41230]" : "bg-white text-[#444] border-[#E0E0E0] hover:border-[#C41230] hover:text-[#C41230]"}`}
+              <div className="bg-card/50 p-2 border border-border">
+                <div className="text-[10px] text-muted-foreground uppercase mb-1">Status</div>
+                <div className="text-sm font-bold text-primary flex items-center gap-1">
+                  <Shield className="w-3 h-3" />
+                  CLEARED
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Database Table */}
+        <Card className="lg:col-span-2 border-primary/20 bg-black/50 order-1 lg:order-2 flex flex-col h-[600px]">
+          <CardHeader className="pb-4">
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="SEARCH VEHICLES..." 
+                className="pl-10 bg-black border-primary/30 rounded-none font-mono"
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-auto p-0">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-secondary/50 text-[10px] uppercase text-muted-foreground sticky top-0 z-10 backdrop-blur-sm border-y border-border">
+                <tr>
+                  <th className="px-4 py-3 cursor-pointer hover:text-white" onClick={() => handleSort('name')}>
+                    Vehicle {sortConfig.key === 'name' && <ArrowUpDown className="inline w-3 h-3" />}
+                  </th>
+                  <th className="px-4 py-3 cursor-pointer hover:text-white" onClick={() => handleSort('class')}>
+                    Class {sortConfig.key === 'class' && <ArrowUpDown className="inline w-3 h-3" />}
+                  </th>
+                  <th className="px-4 py-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('speed')}>
+                    Speed {sortConfig.key === 'speed' && <ArrowUpDown className="inline w-3 h-3" />}
+                  </th>
+                  <th className="px-4 py-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('accel')}>
+                    Accel {sortConfig.key === 'accel' && <ArrowUpDown className="inline w-3 h-3" />}
+                  </th>
+                  <th className="px-4 py-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort('score')}>
+                    Score {sortConfig.key === 'score' && <ArrowUpDown className="inline w-3 h-3" />}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedAndFilteredVehicles.map(v => (
+                  <tr 
+                    key={v.name} 
+                    className={`border-b border-border/30 hover:bg-white/5 cursor-pointer transition-colors ${selectedVehicleName === v.name ? 'bg-primary/10 border-l-2 border-l-primary' : 'border-l-2 border-l-transparent'}`}
+                    onClick={() => setSelectedVehicleName(v.name)}
                   >
-                    {f}
-                  </button>
+                    <td className="px-4 py-3 font-bold text-white">{v.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{v.class}</td>
+                    <td className="px-4 py-3 text-right">{v.speed}</td>
+                    <td className="px-4 py-3 text-right">{v.accel}</td>
+                    <td className="px-4 py-3 text-right text-primary font-bold">{v.score}</td>
+                  </tr>
                 ))}
-              </div>
-            </div>
-
-            <div className="border border-[#E0E0E0] p-4">
-              <div className="flex items-center gap-2 mb-3 text-[#1A1A1A] font-bold uppercase text-[0.75rem] tracking-widest">
-                <Search className="w-4 h-4" /> Search
-              </div>
-              <div className="bg-white border border-[#E0E0E0] px-3 py-2 text-[0.85rem] text-[#999]">
-                Search vehicle name...
-              </div>
-            </div>
-          </aside>
-
-          <div className="flex-1 min-w-0">
-            <section className="border border-[#E0E0E0] mb-8">
-              <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_1fr]">
-                <div className="relative bg-[#0E1B28] text-white min-h-[360px] flex items-end">
-                  <img
-                    src="https://preview.redd.it/etq2a4l8etyg1.jpeg?width=640&crop=smart&auto=webp&s=9eaca6d4cfb2c30f5c42d63f3f927fc197f28f47"
-                    alt="Featured vehicle"
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover opacity-85"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="relative p-6 max-w-xl">
-                    <div className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/70 mb-2">Featured</div>
-                    <h2 className="font-playfair font-black text-[2.4rem] leading-tight mb-2">Jason&apos;s house cruiser</h2>
-                    <p className="text-[0.9rem] text-white/80 leading-relaxed">
-                      GTACars-style hero card: large image, quick facts, and a clean catalog feel with the article title overlaid.
-                    </p>
-                    <div className="mt-4 flex items-center gap-3 text-[0.75rem] uppercase tracking-widest">
-                      <span className="bg-[#C41230] px-3 py-1">Vice City</span>
-                      <span className="bg-white/15 px-3 py-1">Confirmed</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-widest mb-1">Catalog</div>
-                      <h3 className="font-playfair font-bold text-[1.4rem]">Leonida Vehicle Index</h3>
-                    </div>
-                    <div className="flex gap-2 text-[#666]">
-                      <button className="border border-[#E0E0E0] p-2 hover:border-[#C41230] hover:text-[#C41230]"><ChevronLeft className="w-4 h-4" /></button>
-                      <button className="border border-[#E0E0E0] p-2 hover:border-[#C41230] hover:text-[#C41230]"><ChevronRight className="w-4 h-4" /></button>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    {VEHICLES.slice(0, 4).map((cat) => (
-                      <div key={cat.category} className="border border-[#E0E0E0] p-3 hover:border-[#C41230] transition-colors">
-                        <div className="text-[0.65rem] uppercase tracking-widest text-[#999] mb-1">{cat.category}</div>
-                        <div className="font-bold text-[0.95rem] mb-1">{cat.models[0].name}</div>
-                        <div className="text-[0.8rem] text-[#666] leading-relaxed">{cat.models[0].note}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section className="mb-10">
-              <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-2 mb-5">
-                <h2 className="font-playfair font-bold text-[1.6rem]">Vehicle Catalog</h2>
-                <div className="text-[0.75rem] text-[#999] uppercase tracking-widest">Browse by category</div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {VEHICLES.map((cat) => (
-                  <article key={cat.category} className="border border-[#E0E0E0] bg-white overflow-hidden">
-                    <div className="px-4 py-3 text-white font-bold text-[0.9rem] uppercase tracking-wide" style={{ backgroundColor: cat.color }}>
-                      {cat.category}
-                    </div>
-                    <div className="divide-y divide-[#E0E0E0]">
-                      {cat.models.map((v, idx) => (
-                        <div key={v.name} className="px-4 py-3 grid grid-cols-[1fr_auto] gap-4 items-start hover:bg-[#FAFAFA]">
-                          <div>
-                            <div className="font-bold text-[0.92rem] text-[#1A1A1A]">{v.name}</div>
-                            <div className="text-[0.78rem] text-[#666] leading-relaxed mt-1">{v.note}</div>
-                          </div>
-                          <div className="text-[0.65rem] uppercase tracking-widest text-[#999] pt-1">#{idx + 1}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="mb-10">
-              <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-2 mb-5">
-                <h2 className="font-playfair font-bold text-[1.6rem]">Confirmed Arsenal</h2>
-                <div className="text-[0.75rem] text-[#999] uppercase tracking-widest">Loadout</div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {WEAPONS.map((w) => (
-                  <div key={w.category} className="border border-[#E0E0E0] p-4 bg-white">
-                    <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-wider mb-3">{w.category}</div>
-                    <ul className="space-y-1">
-                      {w.items.map((item) => (
-                        <li key={item} className="flex items-center gap-2 text-[0.875rem] text-[#444]">
-                          <span className="w-1.5 h-1.5 bg-[#1A1A1A] rounded-full shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
-        </div>
-      </main>
-
-      <Footer />
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
