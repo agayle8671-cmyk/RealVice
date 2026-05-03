@@ -1,54 +1,74 @@
+import { Search, CloudSun } from "lucide-react";
+import { Link } from "wouter";
+
 export function NavBar() {
   return (
-    <div className="w-full bg-[#F5EFE0] border-b-[4px] border-[#2C1F0E] relative pb-2 pt-2 z-50">
-      <div className="absolute bottom-[-8px] left-0 right-0 border-b-[1px] border-[#2C1F0E]" />
-      
-      <div className="max-w-[1200px] mx-auto px-4 flex flex-col items-center">
-        {/* Top Strip */}
-        <div className="w-full flex justify-between items-center border-t-[1px] border-b-[1px] border-[#2C1F0E] py-1 mb-4">
-          <span className="font-libre text-[11px] font-variant-small-caps uppercase tracking-widest text-[#1A1208]">
-            Saturday, May 3, 2026 — Vol. XCIV, No. 12
-          </span>
-          <span className="font-libre text-[11px] font-variant-small-caps uppercase tracking-widest text-[#1A1208]">
-            LEONIDA METROPOLITAN EDITION
-          </span>
+    <header className="w-full flex flex-col font-sans">
+      {/* 1. Very thin utility bar */}
+      <div className="bg-white border-b border-[#E0E0E0] h-8 flex justify-between items-center px-4 text-[11px] text-[#666666]">
+        <div className="flex items-center gap-2">
+          <CloudSun className="w-4 h-4" />
+          <span className="font-bold tracking-wide">LEONIDA, FL</span>
+          <span>Saturday, May 3, 2026</span>
         </div>
-
-        {/* Masthead */}
-        <div className="text-center mb-2">
-          <h1 className="font-blackletter text-6xl md:text-7xl lg:text-[5.5rem] text-[#1A1208] leading-none mb-1 tracking-tight">
-            THE LEONIDA VICE
-          </h1>
-          <p className="font-playfair italic text-sm md:text-[15px] text-[#1A1208]">
-            "All The Intelligence Fit To Print — Vice City's Premier Daily Intelligence Report"
-          </p>
-        </div>
-
-        {/* Double Rule */}
-        <div className="w-full border-t-[3px] border-[#2C1F0E] mb-[2px]" />
-        <div className="w-full border-t-[1px] border-[#2C1F0E] mb-3" />
-
-        {/* Nav Tabs */}
-        <div className="flex items-center justify-center gap-4 md:gap-8 overflow-x-auto w-full pb-1 scrollbar-hide">
-          <NavTab text="HOME" active />
-          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
-          <NavTab text="MARKETS" />
-          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
-          <NavTab text="INTELLIGENCE" />
-          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
-          <NavTab text="COUNTY RECORDS" />
-          <div className="w-[1px] h-4 bg-[#2C1F0E]" />
-          <NavTab text="VEHICLE REGISTRY" />
+        <div className="flex items-center">
+          <button className="bg-[#C41230] text-white px-4 h-8 font-bold tracking-widest text-[10px] hover:bg-[#A00E26] transition-colors mr-4" style={{ borderRadius: '2px' }}>
+            SUBSCRIBE
+          </button>
+          <button className="font-bold text-[#1A1A1A] hover:underline mr-4">
+            Sign In
+          </button>
+          <Search className="w-4 h-4 text-[#1A1A1A] cursor-pointer" />
         </div>
       </div>
-    </div>
-  );
-}
 
-function NavTab({ text, active }: { text: string, active?: boolean }) {
-  return (
-    <div className={`font-libre text-[12px] uppercase tracking-widest cursor-pointer whitespace-nowrap ${active ? 'text-[#8B0000] font-bold border-b border-[#8B0000]' : 'text-[#1A1208] hover:text-[#8B0000]'}`}>
-      {text}
-    </div>
+      {/* 2. Main header bar */}
+      <div className="bg-white py-3 shadow-sm flex items-center justify-between px-4 max-w-screen-xl mx-auto w-full">
+        <div className="w-48 text-[11px] text-[#666666]">
+          <span className="text-[#C41230] font-bold block mb-1">PROMO</span>
+          Exclusive content available now.
+        </div>
+        <div className="flex-1 text-center">
+          <Link href="/" className="inline-block">
+            <h1 className="font-playfair font-black text-3xl md:text-[2.5rem] text-[#1A1A1A] tracking-tight uppercase border-[3px] border-[#1A1A1A] px-6 py-2 leading-none">
+              LEONIDA VICE
+            </h1>
+          </Link>
+        </div>
+        <div className="w-48 text-right text-[12px] font-bold text-[#1A1A1A]">
+          <a href="#" className="hover:underline">Newsletters</a> | <a href="#" className="hover:underline">Today's Edition</a>
+        </div>
+      </div>
+
+      {/* 3. Primary nav bar */}
+      <div className="w-full bg-white border-b border-[#E0E0E0]">
+        <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-center space-x-6 h-10 text-[13px] font-semibold text-[#333333]">
+          <Link href="/" className="text-[#C41230] border-b-2 border-[#C41230] h-full flex items-center">Home</Link>
+          {['Vice City', 'Leonida', 'Markets', 'Opinion', 'Vehicles', 'Intel', 'Business', 'Investigations', 'Counties', 'Podcasts'].map(item => (
+            <a key={item} href="#" className="h-full flex items-center hover:text-[#C41230] hover:border-b-2 hover:border-[#C41230] border-b-2 border-transparent transition-colors">
+              {item}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. Sub-nav strip */}
+      <div className="w-full bg-[#F7F7F7] border-b border-[#E0E0E0]">
+        <div className="max-w-screen-xl mx-auto px-4 flex items-center space-x-2 h-8 text-[11px] text-[#666666] overflow-x-auto whitespace-nowrap">
+          <span className="font-bold text-[#C41230] uppercase">Breaking:</span>
+          <div className="flex items-center space-x-2">
+            <a href="#" className="hover:underline">VCI Airport Confirmed</a>
+            <span>·</span>
+            <a href="#" className="hover:underline">BAWSAQ Surge</a>
+            <span>·</span>
+            <a href="#" className="hover:underline">Mariana County Routes</a>
+            <span>·</span>
+            <a href="#" className="hover:underline">Allied Crystal</a>
+            <span>·</span>
+            <a href="#" className="hover:underline">Leonida Counties</a>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }
