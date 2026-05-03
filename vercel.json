@@ -1,6 +1,6 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "bash build-vercel.sh",
+  "buildCommand": "pnpm --filter @workspace/leonida-vice run build:vercel && mkdir -p dist && cp -r artifacts/leonida-vice/dist/* dist/ && ls -la dist",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
