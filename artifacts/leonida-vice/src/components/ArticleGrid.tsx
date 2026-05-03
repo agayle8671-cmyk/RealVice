@@ -8,30 +8,79 @@ interface ArticleGridProps {
   sectionLabel?: string;
 }
 
-function ArticleCard({ article, index }: { article: Article; index: number }) {
-  const showImage = index === 1 && (article.imageThumbnail || article.videoThumbnail);
+const CATEGORY_COLORS: Record<string, string> = {
+  "Vice City": "#1A3A5C",
+  "Markets": "#1A4A1A",
+  "Vehicles": "#3A1A1A",
+  "Business": "#2A1A3A",
+  "Counties": "#1A2A3A",
+  "Investigations": "#3A2A1A",
+  "Opinion": "#3A1A2A",
+  "Intel": "#1A1A3A",
+};
 
+function CardImage({ article }: { article: Article }) {
+  const thumb = article.videoThumbnail ?? article.imageThumbnail ?? null;
+  const bg = CATEGORY_COLORS[article.category ?? ""] ?? "#1A1A1A";
+
+  if (!thumb) {
+    return (
+      <div
+        className="w-full aspect-[3/2] mb-3 flex flex-col items-center justify-center px-4 text-center"
+        style={{ backgroundColor: bg }}
+      >
+        <div className="text-white/30 text-[0.6rem] font-bold uppercase tracking-[0.15em] mb-2">
+          {article.category}
+        </div>
+        <div className="text-white font-playfair font-bold text-[0.85rem] leading-snug line-clamp-3 opacity-90">
+          {article.title}
+        </div>
+        <div className="text-white/40 text-[0.6rem] uppercase tracking-wider mt-2">
+          {article.sourceName}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer" className="relative group block mb-3">
+      <img
+        src={thumb}
+        alt={article.title}
+        referrerPolicy="no-referrer"
+        className="w-full aspect-[3/2] object-cover"
+        onError={(e) => {
+          const img = e.currentTarget;
+          img.style.display = "none";
+          const next = img.nextElementSibling as HTMLElement | null;
+          if (next) next.style.display = "flex";
+        }}
+      />
+      <div
+        className="w-full aspect-[3/2] flex-col items-center justify-center px-4 text-center"
+        style={{ display: "none", backgroundColor: bg }}
+      >
+        <div className="text-white font-playfair font-bold text-[0.85rem] leading-snug line-clamp-3 opacity-90">
+          {article.title}
+        </div>
+      </div>
+      {article.isVideo && (
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <ExternalLink className="text-white w-6 h-6" />
+        </div>
+      )}
+    </a>
+  );
+}
+
+function ArticleCard({ article, index }: { article: Article; index: number }) {
   return (
     <article className={`flex flex-col ${index !== 0 ? "md:border-l border-[#E0E0E0] md:pl-6" : ""}`}>
       <div className="text-[#C41230] text-[0.7rem] font-bold uppercase tracking-[0.05em] mb-2">
         {article.category}
       </div>
 
-      {showImage && (
-        <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer" className="relative group">
-          <img
-            src={(article.videoThumbnail ?? article.imageThumbnail)!}
-            alt={article.title}
-            referrerPolicy="no-referrer"
-            className="w-full aspect-[3/2] object-cover mb-3"
-          />
-          {article.isVideo && (
-            <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <ExternalLink className="text-white w-6 h-6" />
-            </div>
-          )}
-        </a>
-      )}
+      <CardImage article={article} />
 
       <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer">
         <h3 className="font-playfair font-bold text-[1rem] text-[#1A1A1A] leading-[1.3] mb-3 hover:underline cursor-pointer">
@@ -52,7 +101,7 @@ function SkeletonCard({ index }: { index: number }) {
   return (
     <div className={`flex flex-col animate-pulse ${index !== 0 ? "md:border-l border-[#E0E0E0] md:pl-6" : ""}`}>
       <div className="h-2 w-16 bg-[#E0E0E0] rounded mb-2" />
-      {index === 1 && <div className="w-full aspect-[3/2] bg-[#E0E0E0] mb-3" />}
+      <div className="w-full aspect-[3/2] bg-[#E0E0E0] mb-3" />
       <div className="h-4 bg-[#E0E0E0] rounded mb-1" />
       <div className="h-4 bg-[#E0E0E0] rounded mb-1 w-4/5" />
       <div className="h-4 bg-[#E0E0E0] rounded w-3/5" />
