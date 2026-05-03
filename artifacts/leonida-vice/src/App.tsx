@@ -8,6 +8,9 @@ import Counties from "@/pages/Counties";
 import Characters from "@/pages/Characters";
 import Vehicles from "@/pages/Vehicles";
 import Intel from "@/pages/Intel";
+import Opinion from "@/pages/Opinion";
+import Investigations from "@/pages/Investigations";
+import Podcasts from "@/pages/Podcasts";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +23,9 @@ function Router() {
       <Route path="/characters" component={Characters} />
       <Route path="/vehicles" component={Vehicles} />
       <Route path="/intel" component={Intel} />
+      <Route path="/opinion" component={Opinion} />
+      <Route path="/investigations" component={Investigations} />
+      <Route path="/podcasts" component={Podcasts} />
       <Route component={Home} />
     </Switch>
   );

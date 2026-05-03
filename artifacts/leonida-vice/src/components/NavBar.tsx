@@ -8,9 +8,9 @@ const NAV_ITEMS = [
   { label: "Characters", href: "/characters" },
   { label: "Vehicles", href: "/vehicles" },
   { label: "Intel", href: "/intel" },
-  { label: "Opinion", href: "/" },
-  { label: "Investigations", href: "/" },
-  { label: "Podcasts", href: "/" },
+  { label: "Opinion", href: "/opinion" },
+  { label: "Investigations", href: "/investigations" },
+  { label: "Podcasts", href: "/podcasts" },
 ];
 
 const BREAKING = [
@@ -22,7 +22,7 @@ const BREAKING = [
   "Relationship Bar mechanic tracks Jason & Lucia bond in real time",
   "Port Gellhorn confirmed as major secondary city",
   "V-Rock radio station returning from 3D era",
-  "Lua Caminos is first non-optional female protagonist in HD Universe",
+  "Lucia Caminos is first non-optional female protagonist in HD Universe",
   "Brian Heder's Marina confirmed as early mission hub in Leonida Keys",
 ];
 
@@ -32,7 +32,6 @@ export function NavBar() {
 
   return (
     <header className="w-full flex flex-col font-sans">
-      {/* Utility bar */}
       <div className="bg-white border-b border-[#E0E0E0] h-8 flex justify-between items-center px-4 text-[11px] text-[#666666]">
         <div className="flex items-center gap-2">
           <CloudSun className="w-4 h-4" />
@@ -47,8 +46,6 @@ export function NavBar() {
           <Search className="w-4 h-4 text-[#1A1A1A] cursor-pointer" />
         </div>
       </div>
-
-      {/* Masthead */}
       <div className="bg-white py-3 shadow-sm flex items-center justify-between px-4 max-w-screen-xl mx-auto w-full">
         <div className="w-48 text-[11px] text-[#666666]">
           <span className="text-[#C41230] font-bold block mb-1">NOV 19, 2026</span>
@@ -65,8 +62,6 @@ export function NavBar() {
           <a href="#" className="hover:underline">Newsletters</a> | <a href="#" className="hover:underline">Today's Edition</a>
         </div>
       </div>
-
-      {/* Primary nav */}
       <div className="w-full bg-white border-b border-[#E0E0E0]">
         <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-center space-x-6 h-10 text-[13px] font-semibold text-[#333333]">
           {NAV_ITEMS.map(({ label, href }) => {
@@ -75,9 +70,7 @@ export function NavBar() {
               <Link
                 key={label}
                 href={href}
-                className={`h-full flex items-center border-b-2 transition-colors hover:text-[#C41230] hover:border-[#C41230] ${
-                  active ? "text-[#C41230] border-[#C41230]" : "border-transparent"
-                }`}
+                className={`h-full flex items-center border-b-2 transition-colors hover:text-[#C41230] hover:border-[#C41230] ${active ? "text-[#C41230] border-[#C41230]" : "border-transparent"}`}
               >
                 {label}
               </Link>
@@ -85,8 +78,6 @@ export function NavBar() {
           })}
         </div>
       </div>
-
-      {/* Breaking news ticker */}
       <div className="w-full bg-[#F7F7F7] border-b border-[#E0E0E0] overflow-hidden">
         <div className="max-w-screen-xl mx-auto px-4 flex items-center h-8 text-[11px] text-[#666666]">
           <span className="font-bold text-[#C41230] uppercase shrink-0 mr-3">Breaking:</span>
