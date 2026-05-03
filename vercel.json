@@ -1,7 +1,7 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm --filter @workspace/leonida-vice run build:vercel",
-  "outputDirectory": "artifacts/leonida-vice/dist",
+  "buildCommand": "pnpm --filter @workspace/leonida-vice run build:vercel && cp -r artifacts/leonida-vice/dist ./dist",
+  "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
